@@ -1,0 +1,138 @@
+@anchor-width: 16px;
+@anchor-half-width: 10px;
+
+.v-middle {
+  top: 50%;
+  margin-top: -@anchor-half-width;
+}
+
+.h-middle {
+  left: 50%;
+  margin-left: -@anchor-half-width;
+}
+
+body {
+  overflow-x: hidden; // chrome simulator hack
+}
+
+.clip-container {
+  display: block;
+  width: 100%;
+  position: relative;
+  background-size: contain;
+  // background-position: center;
+  background-repeat: no-repeat;
+  background-origin: border-box;
+}
+
+.clip-container:after {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 0;
+  content: '\20';
+  opacity: 0.6;
+  background-color: #000;
+}
+
+.clip-viewport {
+  user-select: none;
+  border: 4px dashed rgb(142, 219, 255);
+  background-origin: border-box;
+  position: absolute;
+  background-clip: padding-box;
+  z-index: 1;
+  background-repeat: no-repeat;
+  overflow: visible;
+  cursor: move;
+  will-change: transform, width, height, opacity;
+  box-sizing: border-box;
+  transition: opacity 0.15s, border-color 0.15s;
+
+  &.clip-resizeing {
+    border-color: #fff;
+    .clip-anchor {
+      background-color: #fff;
+    }
+  }
+}
+
+.clip-viewport .clip-anchor {
+  display: block;
+  background-color: rgb(155, 174, 255);
+  width: @anchor-width;
+  height: @anchor-width;
+  position: absolute;
+  z-index: 999;
+  transition: background-color 0.15s;
+}
+
+.clip-viewport.active {
+  filter: contrast(125%);
+}
+
+.clip-viewport .clip-anchor.active {
+  filter: contrast(150%);
+}
+
+.clip-viewport .clip-anchor.clip-anchor-lt {
+  top: -@anchor-half-width;
+  left: -@anchor-half-width;
+  cursor: nwse-resize;
+}
+
+.clip-viewport .clip-anchor.clip-anchor-lm {
+  left: -@anchor-half-width;
+  cursor: ew-resize;
+  .v-middle;
+}
+
+.clip-viewport .clip-anchor.clip-anchor-lb {
+  left: -@anchor-half-width;
+  bottom: -@anchor-half-width;
+  cursor: nesw-resize;
+}
+
+.clip-viewport .clip-anchor.clip-anchor-rt {
+  top: -@anchor-half-width;
+  right: -@anchor-half-width;
+  cursor: nesw-resize;
+}
+
+.clip-viewport .clip-anchor.clip-anchor-rm {
+  right: -@anchor-half-width;
+  cursor: ew-resize;
+  .v-middle;
+}
+
+.clip-viewport .clip-anchor.clip-anchor-rb {
+  right: -@anchor-half-width;
+  bottom: -@anchor-half-width;
+  cursor: nwse-resize;
+}
+
+.clip-viewport .clip-anchor.clip-anchor-tm {
+  top: -@anchor-half-width;
+  cursor: ns-resize;
+  .h-middle;
+}
+
+.clip-viewport .clip-anchor.clip-anchor-bm {
+  bottom: -@anchor-half-width;
+  cursor: ns-resize;
+  .h-middle;
+}
+
+.clip-container-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
