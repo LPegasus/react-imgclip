@@ -193,9 +193,11 @@ export default class ImageClip extends React.Component<IImageClipProps, IImageCl
       && typeof nextProps.getDataURLDelegator === 'function') {
       nextProps.getDataURLDelegator(this.internalGetDataURL);
     }
-    if (nextProps.src !== this.props.src) {
-      this.loadImage(nextProps.src);
-    } else if (nextProps.x && nextProps.y && nextProps.width && nextProps.height) {
+    if (nextProps.src !== this.props.src || nextProps.ratio !== this.props.ratio
+      || nextProps.canOverClip !== this.props.canOverClip) {
+      return this.loadImage(nextProps.src);
+    }
+    if (nextProps.x !== undefined && nextProps.y !== undefined && nextProps.width !== undefined && nextProps.height !== undefined) {
       this.setState({
         viewportPos: {
           left: (nextProps.x / this.scaleRatio) + this.state.backgroundPositionX,
@@ -259,7 +261,6 @@ export default class ImageClip extends React.Component<IImageClipProps, IImageCl
     if (!this.image) { return; }
 
     this.containerWidth = this.$container.getBoundingClientRect().width;
-
     const layoutInfo = calcContainerSize(
       this.props.ratio,
       this.props.canOverClip,
@@ -442,7 +443,7 @@ export default class ImageClip extends React.Component<IImageClipProps, IImageCl
         this.anchorType,
         this.props.ratio,
       );
-    }, 150);
+    }, typeof this.props.delayTime === 'number' ? this.props.delayTime : ('ontouchstart' in window ? 150 : 0));
   }
 
   handleResizeDragEnd = () => {
