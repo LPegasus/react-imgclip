@@ -6,7 +6,7 @@ import {
   clipImageByPosition,
   distanceOfPoints,
 } from './helpers';
-import './clip-photo.less';
+import './index.less';
 
 export interface IHandleClipInfoChange {
   (clipInfo: IClipPosInfo): void;
@@ -15,7 +15,7 @@ export interface IHandleClipInfoChange {
 let uuid = 0;
 let activeUUID: number = null;
 
-export interface IClipPhotoProps {
+export interface IImageClipProps {
   onError?: (errCode: 'IMG_LOAD_FAIL' | '') => any;
   ratio?: number;   // 宽高比
   src?: string;     // 图片地址
@@ -34,7 +34,7 @@ export interface IClipPhotoProps {
   delayTime?: number;
 }
 
-export interface IClipPhotoState {
+export interface IImageClipState {
   viewportPos: {   // 图片基准位置
     left: number; top: number; height: number; width: number;
   } | null;
@@ -52,7 +52,7 @@ export interface IClipPhotoState {
 
 const isTouchScreen = 'ontouchstart' in window;
 
-export default class ClipPhoto extends React.Component<IClipPhotoProps, IClipPhotoState> {
+export default class ImageClip extends React.Component<IImageClipProps, IImageClipState> {
   static defaultProps = {
     onError: () => { },
   };
@@ -84,7 +84,7 @@ export default class ClipPhoto extends React.Component<IClipPhotoProps, IClipPho
   scaleRatio: number;
   uuid: number;
 
-  state: IClipPhotoState = {
+  state: IImageClipState = {
     loading: true,
     viewportPos: {
       left: 0,
@@ -188,7 +188,7 @@ export default class ClipPhoto extends React.Component<IClipPhotoProps, IClipPho
     }
   }
 
-  componentWillReceiveProps(nextProps: IClipPhotoProps) {
+  componentWillReceiveProps(nextProps: IImageClipProps) {
     if (nextProps.getDataURLDelegator !== this.props.getDataURLDelegator
       && typeof nextProps.getDataURLDelegator === 'function') {
       nextProps.getDataURLDelegator(this.internalGetDataURL);

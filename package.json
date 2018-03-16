@@ -5,7 +5,11 @@
   "main": "./lib/index.js",
   "module": "./es/index.js",
   "scripts": {
-    "prepublish": ""
+    "gulp": "gulp",
+    "build": "npm run build:cjs && npm run build:es",
+    "build:cjs": "rm -rf ./lib&&tsc -p ./tsconfig.cjs.json",
+    "build:es": "rm -rf ./es&&tsc -p ./tsconfig.es.json",
+    "start": "export NODE_ENV=dev&&export BABEL_DISABLE_CACHE=1&&webpack-dev-server --watch"
   },
   "repository": {
     "type": "git",
@@ -30,12 +34,15 @@
   },
   "homepage": "https://github.com/LPegasus/react-imgclip#readme",
   "devDependencies": {
+    "@types/react": "^16.0.40",
+    "@types/react-dom": "^16.0.4",
     "awesome-typescript-loader": "^4.0.1",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
     "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-preset-env": "^1.6.1",
     "css-loader": "^0.28.10",
+    "event-stream": "^3.3.4",
+    "extract-text-webpack-plugin": "^3",
     "fs-extra": "^5.0.0",
     "glob": "^7.1.2",
     "gulp": "^3.9.1",
@@ -46,10 +53,14 @@
     "merge2": "^1.2.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "source-map-loader": "^0.2.3",
     "style-loader": "^0.20.3",
     "typescript": "^2.7.2",
-    "webpack": "^4.1.1",
-    "webpack-dev-server": "^3.1.1",
-    "@types/react": "^16.0.40"
+    "underscore": "^1.8.3",
+    "webpack": "^3.0.0",
+    "webpack-dev-server": "^2.0.0"
+  },
+  "dependencies": {
+    "tslib": "^1.9.0"
   }
 }

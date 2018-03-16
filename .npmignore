@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+.vscode
+example/
+.DS_Store
+src/
+tsconfig.cjs.json
+tsconfig.es.json
+tsconfig.json
+webpack.config.js
