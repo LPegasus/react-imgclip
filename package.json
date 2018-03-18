@@ -1,14 +1,14 @@
 {
   "name": "react-imgclip",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "A image clip react component for web.",
   "main": "./lib/index.js",
   "module": "./es/index.js",
   "scripts": {
     "gulp": "gulp",
     "build": "npm run build:cjs && npm run build:es",
-    "build:cjs": "rm -rf ./lib&&tsc -p ./tsconfig.cjs.json",
-    "build:es": "rm -rf ./es&&tsc -p ./tsconfig.es.json",
+    "build:cjs": "gulp clear&&tsc -p ./tsconfig.cjs.json",
+    "build:es": "gulp clear&&tsc -p ./tsconfig.es.json",
     "start": "cross-env NODE_ENV=dev BABEL_DISABLE_CACHE=1 webpack-dev-server --watch"
   },
   "repository": {
