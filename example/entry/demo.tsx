@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import ImageClip from '../../src/index';
+import '../../src/index.less';
 
 class Demo extends React.Component<any, any> {
   state = {

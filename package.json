@@ -1,6 +1,6 @@
 {
   "name": "react-imgclip",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0",
   "description": "A image clip react component for web.",
   "main": "./lib/index.js",
   "module": "./es/index.js",
@@ -9,6 +9,7 @@
     "build": "gulp clear&&npm run build:cjs && npm run build:es",
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
     "build:es": "tsc -p ./tsconfig.es.json",
+    "webpack": "webpack -p",
     "start": "cross-env NODE_ENV=dev BABEL_DISABLE_CACHE=1 webpack-dev-server --watch"
   },
   "repository": {
@@ -38,6 +39,8 @@
     "@types/react": "^16.0.40",
     "@types/react-dom": "^16.0.4",
     "awesome-typescript-loader": "^4.0.1",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
     "babel-plugin-add-module-exports": "^0.2.1",
     "cross-env": "^5.1.4",
     "css-loader": "^0.28.10",
@@ -47,6 +50,7 @@
     "glob": "^7.1.2",
     "gulp": "^3.9.1",
     "gulp-babel": "^8.0.0-beta.2",
+    "gulp-less": "^4.0.0",
     "gulp-typescript": "^4.0.1",
     "less": "^3.0.1",
     "less-loader": "^4.1.0",

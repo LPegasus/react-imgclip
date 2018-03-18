@@ -6,7 +6,6 @@ import {
   clipImageByPosition,
   distanceOfPoints,
 } from './helpers';
-import './index.less';
 
 export interface IHandleClipInfoChange {
   (clipInfo: IClipPosInfo): void;

@@ -1,0 +1,121 @@
+.v-middle {
+  top: 50%;
+  margin-top: -10px;
+}
+.h-middle {
+  left: 50%;
+  margin-left: -10px;
+}
+body {
+  overflow-x: hidden;
+}
+.clip-container {
+  display: block;
+  width: 100%;
+  position: relative;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-origin: border-box;
+}
+.clip-container:after {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 0;
+  content: '\20';
+  opacity: 0.6;
+  background-color: #000;
+}
+.clip-viewport {
+  user-select: none;
+  border: 4px dashed #8edbff;
+  background-origin: border-box;
+  position: absolute;
+  background-clip: padding-box;
+  z-index: 1;
+  background-repeat: no-repeat;
+  overflow: visible;
+  cursor: move;
+  will-change: transform, width, height, opacity;
+  box-sizing: border-box;
+  transition: opacity 0.15s, border-color 0.15s;
+}
+.clip-viewport.clip-resizeing {
+  border-color: #fff;
+}
+.clip-viewport.clip-resizeing .clip-anchor {
+  background-color: #fff;
+}
+.clip-viewport .clip-anchor {
+  display: block;
+  background-color: #9baeff;
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  z-index: 999;
+  transition: background-color 0.15s;
+  touch-action: manipulation;
+}
+.clip-viewport.active {
+  filter: contrast(125%);
+}
+.clip-viewport .clip-anchor.active {
+  filter: contrast(150%);
+}
+.clip-viewport .clip-anchor.clip-anchor-lt {
+  top: -10px;
+  left: -10px;
+  cursor: nwse-resize;
+}
+.clip-viewport .clip-anchor.clip-anchor-lm {
+  left: -10px;
+  cursor: ew-resize;
+  top: 50%;
+  margin-top: -10px;
+}
+.clip-viewport .clip-anchor.clip-anchor-lb {
+  left: -10px;
+  bottom: -10px;
+  cursor: nesw-resize;
+}
+.clip-viewport .clip-anchor.clip-anchor-rt {
+  top: -10px;
+  right: -10px;
+  cursor: nesw-resize;
+}
+.clip-viewport .clip-anchor.clip-anchor-rm {
+  right: -10px;
+  cursor: ew-resize;
+  top: 50%;
+  margin-top: -10px;
+}
+.clip-viewport .clip-anchor.clip-anchor-rb {
+  right: -10px;
+  bottom: -10px;
+  cursor: nwse-resize;
+}
+.clip-viewport .clip-anchor.clip-anchor-tm {
+  top: -10px;
+  cursor: ns-resize;
+  left: 50%;
+  margin-left: -10px;
+}
+.clip-viewport .clip-anchor.clip-anchor-bm {
+  bottom: -10px;
+  cursor: ns-resize;
+  left: 50%;
+  margin-left: -10px;
+}
+.clip-container-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
