@@ -3,13 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const Defer_1 = require("./Defer");
 const CANVAS_ID = `_clip-photo_${Date.now().toString()}`;
-/**
- * 加载图片
- *
- * @export
- * @param {string} url 图片地址
- * @returns {Promise<HTMLImageElement>}
- */
 function loadImage(url) {
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
         const img = new Image();
@@ -26,13 +19,6 @@ function loadImage(url) {
 }
 exports.loadImage = loadImage;
 let base64Canvas = null;
-/**
- * 获取图片 base64
- *
- * @export
- * @param {HTMLImageElement} img
- * @returns {string}
- */
 function base64Image(img) {
     if (base64Canvas === null) {
         base64Canvas = document.createElement('canvas');
@@ -52,22 +38,6 @@ function base64Image(img) {
     return base64Canvas.toDataURL('image/png');
 }
 exports.base64Image = base64Image;
-/**
- * canvas 剪裁图片
- *
- * @export
- * @param {HTMLImageElement} img
- * @param {number} x
- * @param {number} y
- * @param {number} width
- * @param {number} height
- * @param {string} type   图片压缩格式
- * @param {number} quality  图片压缩质量 范围：(0, 1]
- * @param {string} [backgroundColor='#fff'] 背景填充色 默认：非 png 白，png 为 transparent
- * @param {number} [padLeft=0] 左空白
- * @param {number} [padTop=0] 上空白
- * @returns
- */
 function clipImageByPosition(img, x, y, width, height, type = 'jpeg', quality = 1, backgroundColor = null, padLeft = 0, padTop = 0) {
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
         let canvas = document.querySelector(`canvas#${CANVAS_ID}`);
@@ -103,28 +73,6 @@ function clipImageByPosition(img, x, y, width, height, type = 'jpeg', quality = 
     });
 }
 exports.clipImageByPosition = clipImageByPosition;
-/**
- * 剪裁框、容器自适应大小计算
- *
- * @export
- * @param {number} ratio
- * @param {boolean} canOverClip
- * @param {number} wrapperWidth
- * @param {number} natureWidth
- * @param {number} natureHeight
- * @returns {{
- *   viewportX: number;      // 截图位置
- *   viewportY: number;
- *   viewportWidth: number;
- *   viewportHeight: number;
- *   photoImageX: number;    // 图片位置
- *   photoImageY: number;
- *   photoImageWidth: number;
- *   photoImageHeight: number;
- *   containerWidth: number; // 容器大小
- *   containerHeight: number;
- * }}
- */
 function calcContainerSize(ratio, canOverClip, wrapperWidth, natureWidth, natureHeight) {
     let viewportX;
     let viewportY;
@@ -136,9 +84,7 @@ function calcContainerSize(ratio, canOverClip, wrapperWidth, natureWidth, nature
     let photoImageHeight;
     let containerWidth = wrapperWidth;
     let containerHeight;
-    // 比较图片的高宽比
     if (canOverClip) {
-        // 如果截图的高宽比大于原图的高宽比(如: 21:9 > 4:3)，且可以留白截图，则左右留白
         containerHeight = Math.min(Math.ceil(containerWidth / ratio), wrapperWidth);
         if (ratio > natureWidth / natureHeight) {
             photoImageHeight = containerHeight;
@@ -157,16 +103,13 @@ function calcContainerSize(ratio, canOverClip, wrapperWidth, natureWidth, nature
         containerHeight = containerWidth * natureHeight / natureWidth;
         photoImageHeight = containerHeight;
         photoImageWidth = containerWidth;
-        // 最大化截取位置
         if (ratio > natureWidth / natureHeight) {
-            // 已宽度为基准
             viewportWidth = containerWidth;
             viewportX = 0;
             viewportHeight = viewportWidth / ratio;
             viewportY = (containerHeight - viewportHeight) / 2;
         }
         else {
-            // 已高度为基准
             viewportHeight = containerHeight;
             viewportY = 0;
             viewportWidth = ratio ? viewportHeight * ratio : containerWidth;
@@ -216,28 +159,6 @@ function setAngleMinRangeInternal(ratio, deltaX, deltaY, type) {
     }
 }
 ;
-/**
- * 计算限制剪裁区域不能超过原图时的移动偏移范围
- *
- * @export
- * @param {number} containerX
- * @param {number} containerY
- * @param {number} containerWidth
- * @param {number} containerHeight
- * @param {number} viewportX
- * @param {number} viewportY
- * @param {number} viewportWidth
- * @param {number} viewportHeight
- * @param {string} type  move | scale
- * @param {number?} minWidth   仅 scale 模式有效，限制最小宽度
- * @param {number?} minHeight  仅 scale 模式有效，限制最小高度
- * @param {AnchorType?} anchorType  仅 scale 模式有效，移动的是哪个锚点
- * @param {number?} ratio   仅 scale 模式有效，截图高宽比
- * @returns {{
- *   x: number[],
- *   y: number[],
- * }} x 轴和 y 轴的移动范围
- */
 function calcOffsetEdge(containerX, containerY, containerWidth, containerHeight, viewportX, viewportY, viewportWidth, viewportHeight, type, minWidth, minHeight, anchorType, ratio) {
     let minX;
     let minY;
@@ -250,9 +171,8 @@ function calcOffsetEdge(containerX, containerY, containerWidth, containerHeight,
         maxY = containerY + containerHeight - (viewportY + viewportHeight);
     }
     else {
-        let deltaX; // 锚点离边框的距离（放大方向）
+        let deltaX;
         let deltaY;
-        // 计算点击的锚点到边框的距离
         if (anchorType.indexOf('left') !== -1) {
             deltaX = viewportX;
         }
@@ -265,7 +185,6 @@ function calcOffsetEdge(containerX, containerY, containerWidth, containerHeight,
         if (anchorType.indexOf('bottom') !== -1) {
             deltaY = containerHeight - (viewportHeight + viewportY);
         }
-        // 计算可移动范围的最小值
         if (anchorType.indexOf('right') !== -1) {
             minX = minWidth - viewportWidth;
         }
@@ -301,7 +220,7 @@ function calcOffsetEdge(containerX, containerY, containerWidth, containerHeight,
             else if (anchorType === 'leftcenter') {
                 minY = 0;
                 maxY = 0;
-                deltaY = Math.min(containerHeight - (viewportHeight + viewportY), viewportY); // 取近的
+                deltaY = Math.min(containerHeight - (viewportHeight + viewportY), viewportY);
                 if ((deltaX / 2) / deltaY <= ratio) {
                     minX = -deltaX;
                 }
@@ -315,7 +234,7 @@ function calcOffsetEdge(containerX, containerY, containerWidth, containerHeight,
             else if (anchorType === 'topcenter') {
                 minX = 0;
                 maxX = 0;
-                deltaX = Math.min(containerWidth - (viewportWidth + viewportX), viewportX); // 取近的
+                deltaX = Math.min(containerWidth - (viewportWidth + viewportX), viewportX);
                 if ((deltaX * 2) / deltaY <= ratio) {
                     minY = -deltaX * 2 / ratio;
                 }
@@ -327,7 +246,7 @@ function calcOffsetEdge(containerX, containerY, containerWidth, containerHeight,
                 minX = 0;
                 maxX = 0;
                 minY = minHeight - viewportHeight;
-                deltaX = Math.min(containerWidth - (viewportWidth + viewportX), viewportX); // 取近的
+                deltaX = Math.min(containerWidth - (viewportWidth + viewportX), viewportX);
                 if (deltaX * 2 <= ratio * deltaY) {
                     maxY = deltaX * 2 / ratio;
                 }
@@ -341,7 +260,7 @@ function calcOffsetEdge(containerX, containerY, containerWidth, containerHeight,
             else if (anchorType === 'rightcenter') {
                 minY = 0;
                 maxY = 0;
-                deltaY = Math.min(containerHeight - (viewportHeight + viewportY), viewportY); // 取近的
+                deltaY = Math.min(containerHeight - (viewportHeight + viewportY), viewportY);
                 if ((deltaX / 2) / deltaY <= ratio) {
                     maxX = deltaX;
                 }
@@ -448,15 +367,6 @@ function calcScalePos(viewportX, viewportY, viewportWidth, viewportHeight, _delt
     };
 }
 exports.calcScalePos = calcScalePos;
-/**
- * 计算长度
- *
- * @export
- * @param {(number | string)} l 基于 px 的长度或者百分比
- * @param {number} m 当 l 为百分比时必须传入的基准值
- * @param {number} naturalSize 相对原始图片计算
- * @returns {number}
- */
 function getDistance(l, m, naturalSize) {
     if (!l) {
         return 100;
@@ -467,15 +377,6 @@ function getDistance(l, m, naturalSize) {
     return m / naturalSize * Number(l);
 }
 exports.getDistance = getDistance;
-/**
- * 更新值时的精度调节
- *
- * @export
- * @param {IClipPosInfo} info
- * @param {number} containerWidth
- * @param {number} containerHeight
- * @returns {IClipPosInfo}
- */
 function prefixClipInfo(info, containerWidth, containerHeight) {
     const { x, y, width, height } = info;
     const _x = x < 2 ? 0 : Math.max(0, Math.floor(x));
@@ -488,16 +389,6 @@ function prefixClipInfo(info, containerWidth, containerHeight) {
     };
 }
 exports.prefixClipInfo = prefixClipInfo;
-/**
- * 笛卡尔坐标系两点距离
- *
- * @export
- * @param {number} x0
- * @param {number} y0
- * @param {number} [x1=0]
- * @param {number} [y1=0]
- * @returns
- */
 function distanceOfPoints(x0, y0, x1 = 0, y1 = 0) {
     return Math.sqrt((x0 - x1) * (x0 - x1) + (y0 - y1) * (y0 - y1));
 }

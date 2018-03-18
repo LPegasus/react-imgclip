@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import * as React from 'react';
 import { AnchorType, IClipPosInfo } from './helpers';
 import './index.less';

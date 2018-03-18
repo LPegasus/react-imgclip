@@ -53,10 +53,8 @@ class ImageClip extends React.Component {
             if (this.timer > 0) {
                 this.clearDelayTimer();
             }
-            // 切换到 scale 模式
             if (e.touches && e.touches.length === 2) {
                 this.clearDelayTimer();
-                // 记录初始指间距
                 this.thumbOriginDistance = helpers_1.distanceOfPoints(e.touches[0].clientX, e.touches[0].clientY, e.touches[1].clientX, e.touches[1].clientY);
                 this.moveStartPos = {
                     x: NaN,
@@ -83,7 +81,6 @@ class ImageClip extends React.Component {
                     y: clientY,
                 };
                 this.timer = NaN;
-                // 计算截图 viewport 可移动范围
                 this.movePosRange = helpers_1.calcOffsetEdge(this.props.canOverClip ? 0 : this.state.backgroundPositionX, this.props.canOverClip ? 0 : this.state.backgroundPositionY, this.containerWidth, this.props.canOverClip ? this.state.containerHeight : this.state.backgroundSizeHeight, this.state.viewportPos.left, this.state.viewportPos.top, this.state.viewportPos.width, this.state.viewportPos.height, 'move');
             }, typeof this.props.delayTime === 'number' ? this.props.delayTime : ('ontouchstart' in window ? 150 : 0));
         };
@@ -97,7 +94,6 @@ class ImageClip extends React.Component {
             if (this.timer > 0) {
                 this.clearDelayTimer();
             }
-            // 记录下次开始的位置
             this.moveStartPos = null;
             this.movePosRange = null;
             this.thumbOriginDistance = null;
@@ -126,7 +122,6 @@ class ImageClip extends React.Component {
                 }
             }
             else if (isTouchScreen && this.state.isResizing && e.touches && e.touches.length === 2) {
-                // 双指缩放
                 this.handleResizeDragOver(e);
             }
             else {
@@ -158,7 +153,6 @@ class ImageClip extends React.Component {
                     y: clientY,
                     viewportOriginPos: this.state.viewportPos,
                 };
-                // 计算截图 anchor 可移动范围
                 this.movePosRange = helpers_1.calcOffsetEdge(this.props.canOverClip ? 0 : this.state.backgroundPositionX, this.props.canOverClip ? 0 : this.state.backgroundPositionY, this.containerWidth, this.props.canOverClip ? this.state.containerHeight : this.state.backgroundSizeHeight, this.state.viewportPos.left, this.state.viewportPos.top, this.state.viewportPos.width, this.state.viewportPos.height, 'scale', this.min.width, this.min.height, this.anchorType, this.props.ratio);
             }, typeof this.props.delayTime === 'number' ? this.props.delayTime : ('ontouchstart' in window ? 150 : 0));
         };
@@ -186,15 +180,13 @@ class ImageClip extends React.Component {
                 e.stopPropagation();
                 e.preventDefault();
                 const delta = helpers_1.distanceOfPoints(e.touches[0].clientX, e.touches[0].clientY, e.touches[1].clientX, e.touches[1].clientY);
-                // 写死 45 度角缩放
                 const fixedDelta = 0.707 * (delta - this.thumbOriginDistance) / 2;
-                // 记录本次距离用于下次比较
                 this.thumbOriginDistance = delta;
                 let x;
                 let y;
                 let width;
                 let height;
-                width = this.state.viewportPos.width + fixedDelta * 2; // 写死 45 度角缩放
+                width = this.state.viewportPos.width + fixedDelta * 2;
                 x = this.state.viewportPos.left - fixedDelta;
                 y = this.state.viewportPos.top - fixedDelta;
                 height = this.state.viewportPos.height + fixedDelta * 2;
@@ -303,11 +295,8 @@ class ImageClip extends React.Component {
             this.$rightCenterAnchor,
             this.$rightTopAnchor,
         ];
-        // chrome 56 之后，touch 事件若要使用 preventDefault 禁用滚动、下拉刷新，必须设置 passive: false
         if (isTouchScreen) {
             this.$viewport.addEventListener('touchstart', this.handleDragStart, { passive: false });
-            // this.$viewport.addEventListener('touchmove', this.handleDragOver, { passive: false });
-            // this.$viewport.addEventListener('touchend', this.handleDragEnd, { passive: false });
             anchors.forEach(dom => {
                 dom.addEventListener('touchstart', this.handleResizeDragStart, { passive: false });
             });
@@ -316,8 +305,6 @@ class ImageClip extends React.Component {
         }
         else {
             this.$viewport.addEventListener('mousedown', this.handleDragStart, { passive: false });
-            // this.$viewport.addEventListener('mousemove', this.handleDragOver, { passive: false });
-            // this.$viewport.addEventListener('mouseup', this.handleDragEnd, { passive: false });
             anchors.forEach(dom => {
                 dom.addEventListener('mousedown', this.handleResizeDragStart, { passive: false });
             });
@@ -338,8 +325,6 @@ class ImageClip extends React.Component {
         ];
         if (isTouchScreen) {
             this.$viewport.removeEventListener('touchstart', this.handleDragStart);
-            // this.$viewport.removeEventListener('touchmove', this.handleDragOver);
-            // this.$viewport.removeEventListener('touchend', this.handleDragEnd);
             anchors.forEach(dom => {
                 dom.removeEventListener('touchstart', this.handleResizeDragStart);
             });
@@ -348,8 +333,6 @@ class ImageClip extends React.Component {
         }
         else {
             this.$viewport.removeEventListener('mousedown', this.handleDragStart);
-            // this.$viewport.removeEventListener('mousemove', this.handleDragOver);
-            // this.$viewport.removeEventListener('mouseup', this.handleDragEnd);
             anchors.forEach(dom => {
                 dom.removeEventListener('mousedown', this.handleResizeDragStart);
             });
@@ -447,9 +430,7 @@ class ImageClip extends React.Component {
         let width = helpers_1.getDistance(this.props.minWidth || '37%', this.containerWidth, this.image.naturalWidth);
         let height = helpers_1.getDistance(this.props.minHeight || '37%', this.state.containerHeight, this.image.naturalHeight);
         if (this.props.ratio) {
-            // 以高基准计算宽最小值
             const hBaseMinWidth = height * this.props.ratio;
-            // 以宽基准计算高最小值
             const wBaseMinHeight = width / this.props.ratio;
             width = Math.min(width, hBaseMinWidth);
             height = Math.min(height, wBaseMinHeight);
