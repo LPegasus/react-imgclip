@@ -169,7 +169,7 @@ function calcContainerSize(ratio, canOverClip, wrapperWidth, natureWidth, nature
             // 已高度为基准
             viewportHeight = containerHeight;
             viewportY = 0;
-            viewportWidth = viewportHeight * ratio;
+            viewportWidth = ratio ? viewportHeight * ratio : containerWidth;
             viewportX = (containerWidth - viewportWidth) / 2;
         }
     }
@@ -250,16 +250,9 @@ function calcOffsetEdge(containerX, containerY, containerWidth, containerHeight,
         maxY = containerY + containerHeight - (viewportY + viewportHeight);
     }
     else {
-        let deltaX; // 视窗离边框的距离（放大方向）
-        let deltaY; // 视窗离边框的距离（放大方向）
-        if (anchorType.indexOf('left') !== -1 || anchorType.indexOf('center') !== -1) {
-            maxX = viewportWidth - minWidth;
-            maxY = viewportHeight - minHeight;
-        }
-        if (anchorType.indexOf('right') !== -1) {
-            minY = minHeight - viewportHeight;
-            minX = minWidth - viewportWidth;
-        }
+        let deltaX; // 锚点离边框的距离（放大方向）
+        let deltaY;
+        // 计算点击的锚点到边框的距离
         if (anchorType.indexOf('left') !== -1) {
             deltaX = viewportX;
         }
@@ -272,15 +265,42 @@ function calcOffsetEdge(containerX, containerY, containerWidth, containerHeight,
         if (anchorType.indexOf('bottom') !== -1) {
             deltaY = containerHeight - (viewportHeight + viewportY);
         }
-        if (anchorType === 'lefttop') {
-            if (ratio) {
+        // 计算可移动范围的最小值
+        if (anchorType.indexOf('right') !== -1) {
+            minX = minWidth - viewportWidth;
+        }
+        else if (anchorType.indexOf('left') !== -1) {
+            minX = -deltaX;
+        }
+        if (anchorType.indexOf('top') !== -1) {
+            minY = -deltaY;
+        }
+        else if (anchorType.indexOf('bottom') !== -1) {
+            minY = minHeight - viewportHeight;
+        }
+        if (anchorType.indexOf('left') !== -1 || anchorType.indexOf('center') !== -1) {
+            maxX = viewportWidth - minWidth;
+            maxY = viewportHeight - minHeight;
+        }
+        if (anchorType.indexOf('left') !== -1) {
+            maxX = viewportWidth - minWidth;
+        }
+        else if (anchorType.indexOf('right') !== -1) {
+            maxX = deltaX;
+        }
+        if (anchorType.indexOf('top') !== -1) {
+            maxY = viewportHeight - minHeight;
+        }
+        else if (anchorType.indexOf('bottom') !== -1) {
+            maxY = deltaY;
+        }
+        if (ratio) {
+            if (anchorType === 'lefttop') {
                 [minX, minY] = setAngleMinRangeInternal(ratio, deltaX, deltaY, 'left');
             }
-        }
-        else if (anchorType === 'leftcenter') {
-            minY = 0;
-            maxY = 0;
-            if (ratio) {
+            else if (anchorType === 'leftcenter') {
+                minY = 0;
+                maxY = 0;
                 deltaY = Math.min(containerHeight - (viewportHeight + viewportY), viewportY); // 取近的
                 if ((deltaX / 2) / deltaY <= ratio) {
                     minX = -deltaX;
@@ -289,16 +309,12 @@ function calcOffsetEdge(containerX, containerY, containerWidth, containerHeight,
                     minX = -deltaY * 2 * ratio;
                 }
             }
-        }
-        else if (anchorType === 'leftbottom') {
-            if (ratio) {
+            else if (anchorType === 'leftbottom') {
                 [minX, minY] = setAngleMinRangeInternal(ratio, deltaX, deltaY, 'left');
             }
-        }
-        else if (anchorType === 'topcenter') {
-            minX = 0;
-            maxX = 0;
-            if (ratio) {
+            else if (anchorType === 'topcenter') {
+                minX = 0;
+                maxX = 0;
                 deltaX = Math.min(containerWidth - (viewportWidth + viewportX), viewportX); // 取近的
                 if ((deltaX * 2) / deltaY <= ratio) {
                     minY = -deltaX * 2 / ratio;
@@ -307,12 +323,10 @@ function calcOffsetEdge(containerX, containerY, containerWidth, containerHeight,
                     minY = -deltaY;
                 }
             }
-        }
-        else if (anchorType === 'bottomcenter') {
-            minX = 0;
-            maxX = 0;
-            minY = minHeight - viewportHeight;
-            if (ratio) {
+            else if (anchorType === 'bottomcenter') {
+                minX = 0;
+                maxX = 0;
+                minY = minHeight - viewportHeight;
                 deltaX = Math.min(containerWidth - (viewportWidth + viewportX), viewportX); // 取近的
                 if (deltaX * 2 <= ratio * deltaY) {
                     maxY = deltaX * 2 / ratio;
@@ -321,16 +335,12 @@ function calcOffsetEdge(containerX, containerY, containerWidth, containerHeight,
                     maxY = containerHeight - (viewportY + viewportHeight);
                 }
             }
-        }
-        else if (anchorType === 'righttop') {
-            if (ratio) {
+            else if (anchorType === 'righttop') {
                 [maxX, maxY] = setAngleMinRangeInternal(ratio, deltaX, deltaY, 'right');
             }
-        }
-        else if (anchorType === 'rightcenter') {
-            minY = 0;
-            maxY = 0;
-            if (ratio) {
+            else if (anchorType === 'rightcenter') {
+                minY = 0;
+                maxY = 0;
                 deltaY = Math.min(containerHeight - (viewportHeight + viewportY), viewportY); // 取近的
                 if ((deltaX / 2) / deltaY <= ratio) {
                     maxX = deltaX;
@@ -339,14 +349,9 @@ function calcOffsetEdge(containerX, containerY, containerWidth, containerHeight,
                     maxX = deltaY * 2 * ratio;
                 }
             }
-        }
-        else if (anchorType === 'rightbottom') {
-            if (ratio) {
+            else if (anchorType === 'rightbottom') {
                 [maxX, maxY] = setAngleMinRangeInternal(ratio, deltaX, deltaY, 'right');
             }
-        }
-        else {
-            throw new Error('Invalid [anchorType] param of calcOffsetEdge function.');
         }
     }
     return {

@@ -82,7 +82,7 @@ export default class ImageClip extends React.Component<IImageClipProps, IImageCl
     constructor(props: any, ctx: any);
     componentDidMount(): void;
     componentWillUnmount(): void;
-    componentWillReceiveProps(nextProps: IImageClipProps): void;
+    componentWillReceiveProps(nextProps: IImageClipProps): Promise<void>;
     internalGetDataURL: () => Promise<string>;
     loadImage(src: string): Promise<void>;
     clearDelayTimer(): void;

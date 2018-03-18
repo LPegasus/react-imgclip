@@ -160,7 +160,7 @@ class ImageClip extends React.Component {
                 };
                 // 计算截图 anchor 可移动范围
                 this.movePosRange = helpers_1.calcOffsetEdge(this.props.canOverClip ? 0 : this.state.backgroundPositionX, this.props.canOverClip ? 0 : this.state.backgroundPositionY, this.containerWidth, this.props.canOverClip ? this.state.containerHeight : this.state.backgroundSizeHeight, this.state.viewportPos.left, this.state.viewportPos.top, this.state.viewportPos.width, this.state.viewportPos.height, 'scale', this.min.width, this.min.height, this.anchorType, this.props.ratio);
-            }, 150);
+            }, typeof this.props.delayTime === 'number' ? this.props.delayTime : ('ontouchstart' in window ? 150 : 0));
         };
         this.handleResizeDragEnd = () => {
             this.anchorType = null;
@@ -362,10 +362,11 @@ class ImageClip extends React.Component {
             && typeof nextProps.getDataURLDelegator === 'function') {
             nextProps.getDataURLDelegator(this.internalGetDataURL);
         }
-        if (nextProps.src !== this.props.src) {
-            this.loadImage(nextProps.src);
+        if (nextProps.src !== this.props.src || nextProps.ratio !== this.props.ratio
+            || nextProps.canOverClip !== this.props.canOverClip) {
+            return this.loadImage(nextProps.src);
         }
-        else if (nextProps.x && nextProps.y && nextProps.width && nextProps.height) {
+        if (nextProps.x !== undefined && nextProps.y !== undefined && nextProps.width !== undefined && nextProps.height !== undefined) {
             this.setState({
                 viewportPos: {
                     left: (nextProps.x / this.scaleRatio) + this.state.backgroundPositionX,
