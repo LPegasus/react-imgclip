@@ -11,3 +11,4 @@ webpack.config.js
 gulpfile.js
 .babelrc
 .gitignore
+package-lock.json
