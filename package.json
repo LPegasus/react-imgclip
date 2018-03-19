@@ -9,7 +9,6 @@
     "build": "gulp clear&&npm run build:cjs && npm run build:es",
     "build:cjs": "tsc -p ./tsconfig.cjs.json",
     "build:es": "tsc -p ./tsconfig.es.json",
-    "webpack": "webpack -p",
     "start": "cross-env NODE_ENV=dev BABEL_DISABLE_CACHE=1 webpack-dev-server --watch"
   },
   "repository": {

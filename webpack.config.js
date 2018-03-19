@@ -119,9 +119,6 @@ module.exports = {
     stats: {
       assets: true
     },
-    allowedHosts: [
-      'local.alipay.net',
-    ]
   },
 
   plugins: plugins

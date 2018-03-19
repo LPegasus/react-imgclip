@@ -2,9 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./es",
-    "module": "commonjs",
-    "target": "es2015",
-    "importHelpers": true,
+    "module": "es2015",
+    "target": "esnext",
     "removeComments": true
   }
 }
