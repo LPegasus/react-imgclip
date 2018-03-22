@@ -5,6 +5,7 @@ import {
   prefixClipInfo,
   clipImageByPosition,
   distanceOfPoints,
+  ClipImageByPositionParams,
 } from './helpers';
 
 export interface IHandleClipInfoChange {
@@ -208,7 +209,7 @@ export default class ImageClip extends React.Component<IImageClipProps, IImageCl
     }
   }
 
-  internalGetDataURL = async () => {
+  internalGetDataURL = async (opts?: { exportType?: 'base64' | 'blob'; quality?: number; backgroundColor?: string; }) => {
     const { left, top, height, width } = this.state.viewportPos;
 
     const fixedViewPort = prefixClipInfo({
@@ -225,18 +226,19 @@ export default class ImageClip extends React.Component<IImageClipProps, IImageCl
       height: fixedViewPort.height * this.scaleRatio,
     };
 
-    return await clipImageByPosition(
-      this.image,
-      clipInfo.x,
-      clipInfo.y,
-      clipInfo.width,
-      clipInfo.height,
-      this.props.imageType || 'jpeg',
-      this.props.quality || 1,
-      this.props.canOverClip ? this.props.fillColor : null,
-      this.props.canOverClip ? this.state.backgroundPositionX * this.scaleRatio : 0,
-      this.props.canOverClip ? this.state.backgroundPositionY * this.scaleRatio : 0,
-    );
+    return await clipImageByPosition({
+      img: this.image,
+      x: clipInfo.x,
+      y: clipInfo.y,
+      width: clipInfo.width,
+      height: clipInfo.height,
+      type: this.props.imageType || 'jpeg',
+      quality: this.props.quality || 1,
+      backgroundColor: this.props.canOverClip ? this.props.fillColor : null,
+      padLeft: this.props.canOverClip ? this.state.backgroundPositionX * this.scaleRatio : 0,
+      padTop: this.props.canOverClip ? this.state.backgroundPositionY * this.scaleRatio : 0,
+      ...opts,
+    });
   }
 
   async loadImage(src: string) {

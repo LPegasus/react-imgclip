@@ -2,7 +2,6 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./lib",
-    "target": "es5",
     "removeComments": true,
     "module": "commonjs"
   }

@@ -4,6 +4,7 @@ import ImageClip from '../../src/index';
 import '../../src/index.less';
 
 class Demo extends React.Component<any, any> {
+  getImageData: (opts: any) => Promise<string | Blob>;
   state = {
     ratio: "1",
     posInfo: {} as any,
@@ -31,10 +32,15 @@ class Demo extends React.Component<any, any> {
 
   handleMoveToLeftTop = () => {
     this.setState(s => {
-      s.posInfo = { ...s.posInfo, x: 0, y: 0};
+      s.posInfo = { ...s.posInfo, x: 0, y: 0 };
       return s;
     });
   };
+
+  showClippedImage = async () => {
+    const stream = await this.getImageData({ exportType: 'blob' });
+    console.log(stream);
+  }
 
   render() {
     return (
@@ -70,8 +76,10 @@ class Demo extends React.Component<any, any> {
             src="./demo.jpeg"
             canOverClip={this.state.canOverClip}
             onChange={this.handleChange}
+            getDataURLDelegator={getImageData => this.getImageData = getImageData}
             ratio={this.state.ratio ? eval(this.state.ratio) : undefined}
           />
+          <button onClick={this.showClippedImage}>show clipped image</button>
         </div>
       </div>
     );

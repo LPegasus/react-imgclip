@@ -54,6 +54,20 @@ export function base64Image(img: HTMLImageElement) {
   return base64Canvas.toDataURL('image/png');
 }
 
+export interface ClipImageByPositionParams {
+  img: HTMLImageElement;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  type?: 'jpeg' | 'png' | 'jpg' | 'bmp';
+  quality?: number;
+  backgroundColor?: string | null;
+  padLeft?: number;
+  padTop?: number;
+  exportType?: 'base64' | 'blob';
+}
+
 /**
  * canvas 剪裁图片
  *
@@ -68,22 +82,22 @@ export function base64Image(img: HTMLImageElement) {
  * @param {string} [backgroundColor='#fff'] 背景填充色 默认：非 png 白，png 为 transparent
  * @param {number} [padLeft=0] 左空白
  * @param {number} [padTop=0] 上空白
+ * @param {'base64' | 'blob'} exportType 输出类型
  * @returns
  */
-export async function clipImageByPosition(
-  img: HTMLImageElement,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  type: 'jpeg' | 'png' | 'jpg' | 'bmp' = 'jpeg',
-  quality: number = 1,
-  backgroundColor: string | null = null,
-  padLeft: number = 0,
-  padTop: number = 0,
-): Promise<string> {
+export async function clipImageByPosition(opts: ClipImageByPositionParams): Promise<string | Blob> {
+  const defaultCfg: Partial<ClipImageByPositionParams> = {
+    type: 'jpeg',
+    quality: 1,
+    padLeft: 0,
+    padTop: 0,
+    exportType: 'base64',
+  };
+
+  const options = { ...defaultCfg, ...opts };
+
   let canvas: HTMLCanvasElement = document.querySelector(`canvas#${CANVAS_ID}`);
-  const bgColor = !backgroundColor ? (type === 'png' ? 'rgba(0,0,0,0)' : 'rgba(255,255,255, 1)') : backgroundColor;
+  const bgColor = !options.backgroundColor ? (options.type === 'png' ? 'rgba(0,0,0,0)' : 'rgba(255,255,255, 1)') : options.backgroundColor;
   if (!canvas) {
     canvas = document.createElement('canvas');
     canvas.id = CANVAS_ID;
@@ -96,31 +110,35 @@ export async function clipImageByPosition(
     document.body.appendChild(canvas);
   }
 
-  return new Promise<string>((resolve, _reject) => {
+  return new Promise<string | Blob>((resolve, _reject) => {
     setTimeout(() => {
       const ctx = canvas.getContext('2d');
-      const { naturalWidth, naturalHeight } = img;
+      const { naturalWidth, naturalHeight } = options.img;
       canvas.width = naturalWidth;
       canvas.height = naturalHeight;
-      ctx.drawImage(img, 0, 0);
+      ctx.drawImage(options.img, 0, 0);
       const imageData = ctx.getImageData(
         0, 0, naturalWidth, naturalHeight,
       );
 
-      canvas.width = width;
-      canvas.height = height;
+      canvas.width = options.width;
+      canvas.height = options.height;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, width, height);
+      ctx.fillRect(0, 0, options.width, options.height);
 
       ctx.putImageData(
         imageData,
-        -(x - padLeft), -(y - padTop),
-        x - padLeft, y - padTop,
-        width - Math.min(0, x - padLeft),
-        height - Math.min(0, y - padTop),
+        -(options.x - options.padLeft), -(options.y - options.padTop),
+        options.x - options.padLeft, options.y - options.padTop,
+        options.width - Math.min(0, options.x - options.padLeft),
+        options.height - Math.min(0, options.y - options.padTop),
       );
-      resolve(canvas.toDataURL(`image/${type}`, quality));
+      if (options.exportType === 'blob') {
+        canvas.toBlob(resolve, `image/${options.type}`, options.quality);
+      } else {
+        resolve(canvas.toDataURL(`image/${options.type}`, options.quality));
+      }
     }, 16);
   });
 }
