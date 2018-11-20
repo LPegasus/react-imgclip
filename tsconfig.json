@@ -4,6 +4,7 @@
     "experimentalDecorators": true,
     "module": "commonjs",
     "target": "es5",
+    "skipLibCheck": true,
     "importHelpers": false,
     "declaration": true,
     "jsx": "react",

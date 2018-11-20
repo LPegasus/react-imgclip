@@ -27,7 +27,7 @@ export interface IImageClipProps {
   height?: number;
   minWidth?: number | string;
   minHeight?: number | string;
-  getDataURLDelegator?: (fn: () => Promise<string>) => void;
+  getDataURLDelegator?: (fn: () => Promise<string | Blob>) => void;
   quality?: number; // 图片压缩质量 (0, 1] default: 1
   imageType?: 'png' | 'jpg' | 'jpeg' | 'bmp';   // 图片压缩类型 default: jpeg
   fillColor?: string;   // 截图空白区图片填充色
@@ -561,7 +561,9 @@ export default class ImageClip extends React.Component<IImageClipProps, IImageCl
 
   getContainerRef = ref => {
     this.$container = ref;
-    this.containerWidth = this.$container.getBoundingClientRect().width;
+    if (ref) {
+      this.containerWidth = this.$container.getBoundingClientRect().width;
+    }
   }
 
   getViewport = ref => {
