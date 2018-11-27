@@ -1,6 +1,6 @@
 {
   "name": "react-imgclip",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A image clip react component for web.",
   "main": "./lib/index.js",
   "module": "./es/index.js",
@@ -43,7 +43,7 @@
     "babel-plugin-add-module-exports": "^0.2.1",
     "cross-env": "^5.1.4",
     "css-loader": "^0.28.10",
-    "event-stream": "^3.3.4",
+    "event-stream": "4.0.1",
     "extract-text-webpack-plugin": "^3",
     "fs-extra": "^5.0.0",
     "glob": "^7.1.2",
